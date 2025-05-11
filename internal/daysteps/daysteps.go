@@ -7,7 +7,7 @@ import (
 	"strings"
 	"fmt"
 	"log"
-	"github.com/Asfode1/YandexPracticum/internal/spentcalories"
+	"github.com/Yandex-Practicum/tracker/internal/spentcalories"
 	
 )
 
@@ -55,8 +55,12 @@ func DayActionInfo(data string, weight, height float64) string {
 	// Переводим в километры
 	distanceKm := distanceMeters / mInKm
 
-	// Вычисляем калории
-	calories := spentcalories.WalkingSpentCalories(weight, height, duration)
+	// Вычисляем калории и обрабатываем ошибку
+	calories, err := spentcalories.WalkingSpentCalories(steps, weight, height, duration)
+	if err != nil {
+		log.Println("Ошибка при расчёте калорий:", err)
+		return ""
+	}
 
 	// Формируем строку результата
 	result := fmt.Sprintf(
