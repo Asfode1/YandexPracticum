@@ -125,20 +125,22 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 	speed := meanSpeed(steps, height, duration)
 
 	var calories float64
-	switch activity {
-	case "бег", ActivityRunning:
-		calories, err = RunningSpentCalories(steps, weight, height, duration)
-	case "ходьба", ActivityWalking:
+
+	switch strings.ToLower(string(activity)) {
+	case "ходьба", "walking":
 		calories, err = WalkingSpentCalories(steps, weight, height, duration)
+	case "бег", "running":
+		calories, err = RunningSpentCalories(steps, weight, height, duration)
 	default:
 		return "", fmt.Errorf("неизвестный тип тренировки: %s", activity)
 	}
+
 	if err != nil {
 		return "", err
 	}
 
 	result := fmt.Sprintf(
-		"Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f",
+		"Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n",
 		strings.Title(string(activity)),
 		duration.Hours(),
 		dist,
