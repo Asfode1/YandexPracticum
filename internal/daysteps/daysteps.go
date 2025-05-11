@@ -17,7 +17,8 @@ const (
 	// Количество метров в одном километре
 	mInKm = 1000
 )
-
+// parsePackage разбирает строку формата "3456,30m"
+// и возвращает количество шагов, длительность и ошибку
 func parsePackage(data string) (int, time.Duration, error) {
 	parts := strings.Split(data, ",")
 	if len(parts) != 2 {
