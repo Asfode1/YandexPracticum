@@ -126,9 +126,9 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 
 	var calories float64
 	switch activity {
-	case ActivityRunning:
+	case "бег", ActivityRunning:
 		calories, err = RunningSpentCalories(steps, weight, height, duration)
-	case ActivityWalking:
+	case "ходьба", ActivityWalking:
 		calories, err = WalkingSpentCalories(steps, weight, height, duration)
 	default:
 		return "", fmt.Errorf("неизвестный тип тренировки: %s", activity)
