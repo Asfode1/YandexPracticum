@@ -17,7 +17,8 @@ const (
 	// Количество метров в одном километре
 	mInKm = 1000
 )
-
+// parsePackage разбирает строку формата "3456,30m"
+// и возвращает количество шагов, длительность и ошибку
 func parsePackage(data string) (int, time.Duration, error) {
 	parts := strings.Split(data, ",")
 	if len(parts) != 2 {
@@ -36,7 +37,9 @@ func parsePackage(data string) (int, time.Duration, error) {
 	if err != nil {
 		return 0, 0, fmt.Errorf("ошибка при разборе продолжительности: %v", err)
 	}
-
+	if duration <= 0 {
+        return 0, 0, errors.New("продолжительность должна быть больше нуля")
+	}
 	return steps, duration, nil
 }
 // DayActionInfo парсит данные, вычисляет дистанцию и калории, возвращает форматированную строку
@@ -64,7 +67,7 @@ func DayActionInfo(data string, weight, height float64) string {
 
 	// Формируем строку результата
 	result := fmt.Sprintf(
-		"Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.",
+		"Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.\n",
 		steps, distanceKm, calories,
 	)
 

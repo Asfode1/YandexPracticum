@@ -29,28 +29,26 @@ func parseTraining(data string) (steps int, activity ActivityType, duration time
 	parts := strings.Split(data, ",")
 	if len(parts) != 3 {
 		err = errors.New("неверный формат: должно быть три значения, разделённых запятыми")
+		steps = 0
+		duration = 0
 		return
 	}
 
 	steps, err = strconv.Atoi(parts[0])
-	if err != nil {
+	if err != nil || steps <= 0 {
 		err = fmt.Errorf("ошибка при разборе количества шагов: %w", err)
-		return
-	}
-	if steps <= 0 {
-		err = errors.New("количество шагов должно быть больше нуля")
+		steps = 0
+		duration = 0
 		return
 	}
 
 	activity = ActivityType(strings.ToLower(parts[1]))
 
 	duration, err = time.ParseDuration(parts[2])
-	if err != nil {
+	if err != nil || duration <= 0 {
 		err = fmt.Errorf("ошибка при разборе продолжительности: %w", err)
-		return
-	}
-	if duration <= 0 {
-		err = errors.New("продолжительность должна быть больше нуля")
+		steps = 0
+		duration = 0
 		return
 	}
 
@@ -127,20 +125,22 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 	speed := meanSpeed(steps, height, duration)
 
 	var calories float64
-	switch activity {
-	case ActivityRunning:
-		calories, err = RunningSpentCalories(steps, weight, height, duration)
-	case ActivityWalking:
+
+	switch strings.ToLower(string(activity)) {
+	case "ходьба", "walking":
 		calories, err = WalkingSpentCalories(steps, weight, height, duration)
+	case "бег", "running":
+		calories, err = RunningSpentCalories(steps, weight, height, duration)
 	default:
 		return "", fmt.Errorf("неизвестный тип тренировки: %s", activity)
 	}
+
 	if err != nil {
 		return "", err
 	}
 
 	result := fmt.Sprintf(
-		"Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f",
+		"Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n",
 		strings.Title(string(activity)),
 		duration.Hours(),
 		dist,
