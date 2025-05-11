@@ -7,6 +7,7 @@ import (
 	"strings"
 	"fmt"
 	"log"
+	"github.com/Asfode1/YandexPracticum/internal/spentcalories"
 	
 )
 
